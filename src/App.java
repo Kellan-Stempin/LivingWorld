@@ -10,10 +10,10 @@ public class App {
         WorldVisualizer visualizer = new WorldVisualizer();
         Random random = new Random();
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Press Enter to start the simulation...");
+        System.out.print("\nPress Enter to start the simulation...");
         scanner.nextLine();
         
-        System.out.println("Creating World: ");
+        System.out.println("\nCreating World... ");
         for (int i = 0; i < 5; i++) {
             world.createCreature();
         }
@@ -27,19 +27,19 @@ public class App {
         
         if (daysInput.isEmpty()) {
             continuousMode = true;
-            System.out.println("Running in continuous mode. Press Ctrl+C to stop.");
+            System.out.println("\nRunning in continuous mode. Press Ctrl+C to stop.");
         } else {
             try {
                 int days = Integer.parseInt(daysInput);
                 if (days <= 0) {
-                    System.out.println("Invalid input. Using continuous mode instead.");
+                    System.out.println("\nInvalid input. Using continuous mode instead.");
                     continuousMode = true;
                 } else {
                     totalTicks = days * 24; // Each day = 24 ticks
-                    System.out.println("Simulating " + days + " day(s) (" + totalTicks + " ticks)...");
+                    System.out.println("\nSimulating " + days + " day(s) (" + totalTicks + " ticks)...");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Using continuous mode instead.");
+                System.out.println("\nInvalid input. Using continuous mode instead.");
                 continuousMode = true;
             }
         }

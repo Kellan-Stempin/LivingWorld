@@ -2,6 +2,8 @@ public class Food {
     private String type;
     private int nutritionValue;
     private boolean consumed;
+    private int x;
+    private int y;
 
     public Food(String type, int nutritionValue) {
         this.type = type;
@@ -22,6 +24,13 @@ public class Food {
     public int getNutritionValue() { return nutritionValue; }
 
     public boolean isConsumed() { return consumed; }
+    
+    public int getX() { return x; }
+    public int getY() { return y; }
+    public void setPosition(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 
     @Override
     public String toString() {

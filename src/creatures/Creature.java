@@ -12,6 +12,8 @@ public abstract class Creature implements Attack {
     private int friendliness;
     private boolean alive;
     private Random random;
+    private int x;
+    private int y;
 
 
     public Creature(String name) {
@@ -66,6 +68,13 @@ public abstract class Creature implements Attack {
     }
 
     public String getSpecies() { return species; }
+    
+    public int getX() { return x; }
+    public int getY() { return y; }
+    public void setPosition(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 
     public void die() {
         this.health = 0;

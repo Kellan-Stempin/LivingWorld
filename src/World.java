@@ -65,6 +65,11 @@ public class World {
         } else {
             newCreature = new Monster(name);
         }
+        
+        // Assign random position (60x25 grid)
+        int x = random.nextInt(60);
+        int y = random.nextInt(25);
+        newCreature.setPosition(x, y);
 
         creatures.add(newCreature);
         return newCreature;
@@ -74,7 +79,18 @@ public class World {
         String[] foodTypes = {"Berry", "Nut", "Leaf", "Seed", "Larry"};
         String type = foodTypes[random.nextInt(foodTypes.length)];
         int nutrition = 1 + random.nextInt(5);
-        food.add(new Food(type, nutrition));
+        Food newFood = new Food(type, nutrition);
+        
+        // Assign random position (60x25 grid)
+        int x = random.nextInt(60);
+        int y = random.nextInt(25);
+        newFood.setPosition(x, y);
+        
+        food.add(newFood);
+    }
+    
+    public List<Food> getFood() {
+        return food;
     }
 
     public void displayStatus() {
@@ -111,5 +127,24 @@ public class World {
 
     public void addCreature(Creature creature) {
         creatures.add(creature);
+    }
+    
+    // Move creatures slightly each iteration to simulate movement
+    public void updatePositions() {
+        for (Creature creature : creatures) {
+            if (creature.isAlive()) {
+                int x = creature.getX();
+                int y = creature.getY();
+                
+                // Random small movement (-1 to +1)
+                int dx = random.nextInt(3) - 1;
+                int dy = random.nextInt(3) - 1;
+                
+                int newX = Math.max(0, Math.min(59, x + dx));
+                int newY = Math.max(0, Math.min(24, y + dy));
+                
+                creature.setPosition(newX, newY);
+            }
+        }
     }
 }

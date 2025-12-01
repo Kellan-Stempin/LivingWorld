@@ -9,18 +9,17 @@ public class Animal extends Creature {
 
     @Override
     public Creature reproduce() {
-        if (!isAlive() || !getReplicationChance()) {
+        if (!isAlive()) {
             return null;
         }
+
         java.util.Random random = new java.util.Random();
-        double reproductionRoll = random.nextDouble();
-        double reproductionChance = 0.30;
-        
-        if (reproductionRoll < reproductionChance) {
+        int randRoll = random.nextInt(0, 100);
+        if (randRoll <= this.replicationChance) {
             return new Animal(getName() + " Jr.");
         }
-        
         return null;
+
     }
 }
     

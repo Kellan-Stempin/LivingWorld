@@ -9,17 +9,16 @@ public class Monster extends Creature {
 
     @Override
     public Creature reproduce() {
-        if (!isAlive() || !getReplicationChance()) {
+        if (!isAlive()) {
             return null;
         }
-        java.util.Random random = new java.util.Random();
-        double reproductionRoll = random.nextDouble();
-        double reproductionChance = 0.20;
         
-        if (reproductionRoll < reproductionChance) {
+        java.util.Random random = new java.util.Random();
+        int randRoll = random.nextInt(0, 100);
+        if (randRoll <= this.replicationChance) {
             return new Monster(getName() + " Jr.");
         }
-        
         return null;
+
     }
 }

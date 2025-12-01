@@ -2,18 +2,18 @@ package creatures;
 import java.util.Random;
 
 public abstract class Creature implements Attack {
-    private String name;
-    private String species;
-    private String[] speciesList = {"Animal", "Monster"};
-    private int health;
-    private int hunger;
-    private int strength;
-    private boolean replicationChance;
-    private int friendliness;
-    private boolean alive;
-    private Random random;
-    private int x;
-    private int y;
+    protected String name;
+    protected String species;
+    protected String[] speciesList = {"Animal", "Monster"};
+    protected int health;
+    protected int hunger;
+    protected int strength;
+    protected int replicationChance;
+    protected int friendliness;
+    protected boolean alive;
+    protected Random random;
+    protected int x;
+    protected int y;
 
 
     public Creature(String name) {
@@ -22,7 +22,7 @@ public abstract class Creature implements Attack {
         this.health = 100;
         this.hunger = 0;
         this.strength = this.random.nextInt(0, 100);
-        this.replicationChance = this.random.nextBoolean(); //can the creature replicate
+        this.replicationChance = this.random.nextInt(0, 10); //can the creature replicate
         this.friendliness = this.random.nextInt(0, 100);
         this.alive = true;
     }
@@ -57,7 +57,7 @@ public abstract class Creature implements Attack {
         this.strength = strength;
     }
 
-    public boolean getReplicationChance() { return replicationChance; }
+    public int getReplicationChance() { return replicationChance; }
 
     public boolean isAlive() { return alive; }
 

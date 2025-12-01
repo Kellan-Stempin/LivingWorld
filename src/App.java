@@ -56,24 +56,17 @@ public class App {
         
         int tick = 0;
         boolean running = true;
-        List<String> events = new ArrayList<>(); // Track events for this tick
+        List<String> events = new ArrayList<>();
         
-        // Add shutdown hook for graceful Ctrl+C handling
-        Thread mainThread = Thread.currentThread();
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("\n\nSimulation interrupted. Showing final state...");
-            world.displayCreatures();
-        }));
+        // Shutdown hook removed - no final stats display
         
         while (running) {
             tick++;
-            events.clear(); // Clear events for new tick
-            
-            // Calculate current day and tick within day
+            events.clear();
+
             int currentDay = (tick - 1) / 24 + 1;
             int tickInDay = ((tick - 1) % 24) + 1;
-            
-            // Update creature positions (simulate movement)
+
             world.updatePositions();
             
             List<Creature> currentCreatures = new ArrayList<>(world.getCreatures());
@@ -115,51 +108,52 @@ public class App {
                 if (creature.isAlive()) {
                     Creature offspring = creature.reproduce();
                     if (offspring != null) {
-                        // Assign position near parent
                         int parentX = creature.getX();
                         int parentY = creature.getY();
-                        int offsetX = random.nextInt(5) - 2; // -2 to +2
+                        int offsetX = random.nextInt(5) - 2;
                         int offsetY = random.nextInt(5) - 2;
-                        int newX = Math.max(0, Math.min(59, parentX + offsetX));
-                        int newY = Math.max(0, Math.min(24, parentY + offsetY));
+                        int newX = Math.max(0, Math.min(59, parentX + offsetX)); // 60 width (0-59)
+                        int newY = Math.max(0, Math.min(24, parentY + offsetY)); // 25 height (0-24)
                         offspring.setPosition(newX, newY);
                         
                         newCreatures.add(offspring);
-                        events.add(creature.getName() + " reproduced! New: " + offspring.getName());
                     }
                 }
             }
             
+            // Add new creatures (only if under capacity limit)
             for (Creature newCreature : newCreatures) {
-                world.addCreature(newCreature);
+                if (world.addCreature(newCreature)) {
+                    events.add(newCreature.getName() + " was born!");
+                }
+                // If addCreature returns false, creature wasn't added (at capacity)
             }
             
             if (random.nextDouble() < spawnChance) {
                 Creature newCreature = world.createCreature();
-                events.add("New creature spawned: " + newCreature.getName());
+                if (newCreature != null) {
+                    events.add("New creature spawned: " + newCreature.getName());
+                }
+                // If null, we're at max capacity
             }
 
             if (random.nextDouble() < foodSpawnChance) {
                 world.spawnFood();
                 events.add("Food spawned in the world!");
             }
-            
-            // Only visualize if something changed (visualize method returns true if it rendered)
+
             visualizer.visualize(world, currentDay, tickInDay, tick, events);
-            
-            // Check if we should continue
+
             if (!continuousMode && tick >= totalTicks) {
                 running = false;
             } else if (continuousMode) {
-                // In continuous mode, small delay between ticks
                 try {
-                    Thread.sleep(500); // 500ms delay between ticks
+                    Thread.sleep(1000); // delay
                 } catch (InterruptedException e) {
                     running = false;
                     System.out.println("\nSimulation stopped by user.");
                 }
             } else {
-                // Manual step mode for non-continuous
                 System.out.print("Press Enter to continue to next tick (or 'q' to quit)...");
                 String input = scanner.nextLine().trim();
                 if (input.equalsIgnoreCase("q")) {
@@ -168,8 +162,7 @@ public class App {
             }
         }
 
-        System.out.println("\n---Final State---");
-        world.displayCreatures();
+        System.out.println("\nSimulation ended.");
         scanner.close();
     }
 }

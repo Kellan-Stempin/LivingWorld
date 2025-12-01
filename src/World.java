@@ -13,6 +13,12 @@ public class World {
     private List<Food> food;
     private Random random;
     private List<String> creatureNames;
+    
+    // Board dimensions and max capacity
+    private static final int BOARD_WIDTH = 60;
+    private static final int BOARD_HEIGHT = 25;
+    private static final int MAX_CREATURES = 200; // Max creatures that can fit on board (60*25 = 1500 cells, but limit to 200 for gameplay)
+    private static final int MAX_FOOD = 50; // Max food items
 
     public World() {
         this.creatures = new ArrayList<>();
@@ -57,6 +63,12 @@ public class World {
     }
 
     public Creature createCreature() {
+        // Check if we're at max capacity
+        int aliveCount = getAliveCreatureCount();
+        if (aliveCount >= MAX_CREATURES) {
+            return null; // Can't spawn more creatures
+        }
+        
         String name = creatureNames.get(random.nextInt(creatureNames.size()));
 
         Creature newCreature;
@@ -67,23 +79,45 @@ public class World {
         }
         
         // Assign random position (60x25 grid)
-        int x = random.nextInt(60);
-        int y = random.nextInt(25);
+        int x = random.nextInt(BOARD_WIDTH);
+        int y = random.nextInt(BOARD_HEIGHT);
         newCreature.setPosition(x, y);
 
         creatures.add(newCreature);
         return newCreature;
     }
+    
+    private int getAliveCreatureCount() {
+        int count = 0;
+        for (Creature creature : creatures) {
+            if (creature.isAlive()) {
+                count++;
+            }
+        }
+        return count;
+    }
 
     public void spawnFood() {
+        // Check if we're at max food capacity
+        int activeFoodCount = 0;
+        for (Food f : food) {
+            if (!f.isConsumed()) {
+                activeFoodCount++;
+            }
+        }
+        
+        if (activeFoodCount >= MAX_FOOD) {
+            return; // Can't spawn more food
+        }
+        
         String[] foodTypes = {"Berry", "Nut", "Leaf", "Seed", "Larry"};
         String type = foodTypes[random.nextInt(foodTypes.length)];
         int nutrition = 1 + random.nextInt(5);
         Food newFood = new Food(type, nutrition);
         
         // Assign random position (60x25 grid)
-        int x = random.nextInt(60);
-        int y = random.nextInt(25);
+        int x = random.nextInt(BOARD_WIDTH);
+        int y = random.nextInt(BOARD_HEIGHT);
         newFood.setPosition(x, y);
         
         food.add(newFood);
@@ -125,8 +159,14 @@ public class World {
         return creatures;
     }
 
-    public void addCreature(Creature creature) {
+    public boolean addCreature(Creature creature) {
+        // Check if we're at max capacity before adding
+        int aliveCount = getAliveCreatureCount();
+        if (aliveCount >= MAX_CREATURES) {
+            return false; // Can't add more creatures
+        }
         creatures.add(creature);
+        return true;
     }
     
     // Move creatures slightly each iteration to simulate movement
@@ -140,11 +180,15 @@ public class World {
                 int dx = random.nextInt(3) - 1;
                 int dy = random.nextInt(3) - 1;
                 
-                int newX = Math.max(0, Math.min(59, x + dx));
-                int newY = Math.max(0, Math.min(24, y + dy));
+                int newX = Math.max(0, Math.min(BOARD_WIDTH - 1, x + dx));
+                int newY = Math.max(0, Math.min(BOARD_HEIGHT - 1, y + dy));
                 
                 creature.setPosition(newX, newY);
             }
         }
+    }
+    
+    public static int getMaxCreatures() {
+        return MAX_CREATURES;
     }
 }

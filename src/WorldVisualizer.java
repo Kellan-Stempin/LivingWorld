@@ -2,19 +2,10 @@ import java.util.List;
 import java.util.ArrayList;
 import creatures.Creature;
 
-/**
- * WorldVisualizer - Creates detailed ASCII art visualization of the Living World
- * 
- * TIP: For best results, reduce your terminal font size:
- * - Windows Terminal: Settings > Appearance > Font size (try 8-10pt)
- * - PowerShell: Right-click title bar > Properties > Font (try 8-10pt)
- * - VS Code Terminal: Settings > Terminal > Font Size (try 10-12px)
- */
 public class WorldVisualizer {
     private static final int GRID_WIDTH = 60;
     private static final int GRID_HEIGHT = 25;
-    
-    // ANSI Color Codes
+
     private static final String RESET = "\u001B[0m";
     private static final String GREEN = "\u001B[32m";
     private static final String RED = "\u001B[31m";
@@ -25,8 +16,7 @@ public class WorldVisualizer {
     private static final String BRIGHT_GREEN = "\u001B[92m";
     private static final String BRIGHT_RED = "\u001B[91m";
     private static final String BRIGHT_YELLOW = "\u001B[93m";
-    
-    // Unicode Box Drawing Characters
+
     private static final String TOP_LEFT = "┌";
     private static final String TOP_RIGHT = "┐";
     private static final String BOTTOM_LEFT = "└";
@@ -43,12 +33,11 @@ public class WorldVisualizer {
     private char[][] grid;
     private String[][] creatureNames;
     private int[][] creatureHealth;
-    
-    // Track previous state to detect changes
+
     private int previousAliveCount = -1;
     private int previousTotalCreatures = -1;
     private int previousFoodCount = -1;
-    private List<String> previousCreatureStates; // Store creature name + health for comparison
+    private List<String> previousCreatureStates;
     
     public WorldVisualizer() {
         this.grid = new char[GRID_HEIGHT][GRID_WIDTH];
@@ -69,7 +58,6 @@ public class WorldVisualizer {
     }
     
     public boolean visualize(World world, int day, int tickInDay, int totalTick, List<String> events) {
-        // Check if anything changed
         int aliveCount = 0;
         int totalCreatures = world.getCreatures().size();
         int foodCount = world.getFood().size();
@@ -77,28 +65,23 @@ public class WorldVisualizer {
         for (Creature c : world.getCreatures()) {
             if (c.isAlive()) aliveCount++;
         }
-        
-        // Build current creature states
+
         List<String> currentCreatureStates = new ArrayList<>();
         for (Creature creature : world.getCreatures()) {
             if (creature.isAlive()) {
                 currentCreatureStates.add(creature.getName() + ":" + creature.getHealth());
             }
         }
-        
-        // Check if anything changed
+
         boolean hasChanges = 
             previousAliveCount != aliveCount ||
             previousTotalCreatures != totalCreatures ||
             previousFoodCount != foodCount ||
             !currentCreatureStates.equals(previousCreatureStates) ||
             (events != null && !events.isEmpty());
-        
-        // Only render if something changed or it's the first render
+
         if (hasChanges || previousAliveCount == -1) {
             clearGrid();
-            
-            // Place creatures on grid
             List<Creature> creatures = world.getCreatures();
             for (Creature creature : creatures) {
                 if (creature.isAlive()) {
@@ -107,17 +90,16 @@ public class WorldVisualizer {
                     
                     if (x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT) {
                         if (creature.getSpecies().equals("Animal")) {
-                            grid[y][x] = 'A';  // Animal
+                            grid[y][x] = 'A';
                         } else {
-                            grid[y][x] = 'M';  // Monster
+                            grid[y][x] = 'M';
                         }
                         creatureNames[y][x] = creature.getName();
                         creatureHealth[y][x] = creature.getHealth();
                     }
                 }
             }
-            
-            // Place food on grid
+
             List<Food> foodList = world.getFood();
             for (Food food : foodList) {
                 if (!food.isConsumed()) {
@@ -125,62 +107,46 @@ public class WorldVisualizer {
                     int y = food.getY();
                     
                     if (x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT && grid[y][x] == ' ') {
-                        grid[y][x] = '•';  // Food
+                        grid[y][x] = '•';
                     }
                 }
             }
-            
-            // Update previous state
             previousAliveCount = aliveCount;
             previousTotalCreatures = totalCreatures;
             previousFoodCount = foodCount;
             previousCreatureStates = new ArrayList<>(currentCreatureStates);
-            
-            // Render the visualization with day/tick info
             render(day, tickInDay, totalTick, world, events);
             return true;
         }
         
-        return false; // No changes, didn't render
+        return false;
     }
     
     private void clearScreen() {
-        // Method 1: Try system command (works best in standalone terminals)
         try {
             String os = System.getProperty("os.name").toLowerCase();
             
             if (os.contains("win")) {
-                // Windows: Use 'cls' command
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-                return; // Success, exit early
+                return;
             } else {
-                // Unix/Linux/Mac: Use 'clear' command
                 new ProcessBuilder("clear").inheritIO().start().waitFor();
-                return; // Success, exit early
+                return;
             }
         } catch (Exception e) {
-            // Command failed, try next method
         }
-        
-        // Method 2: Try ANSI escape codes (works in modern terminals)
+
         try {
             System.out.print("\033[H\033[2J");
             System.out.flush();
-            // Small delay to let it process
             Thread.sleep(10);
             return;
         } catch (Exception e) {
-            // ANSI failed, use fallback
         }
-        
-        // Method 3: Reliable fallback - print many newlines
-        // This works in ALL terminals and IDEs
         printNewlines(100);
     }
     
     private void printNewlines(int count) {
-        // Print many newlines to clear visible area
-        // This is the most reliable method across all platforms and IDEs
         for (int i = 0; i < count; i++) {
             System.out.println();
         }
@@ -188,18 +154,15 @@ public class WorldVisualizer {
     }
     
     private void render(int day, int tickInDay, int totalTick, World world, List<String> events) {
-        // Clear screen - try multiple methods for cross-platform compatibility
         clearScreen();
-        
-        // Title
+
         System.out.println();
         System.out.println(CYAN + "╔════════════════════════════════════════════════════════════════╗" + RESET);
         System.out.println(CYAN + "║" + RESET + "              " + BRIGHT_YELLOW + "LIVING WORLD SIMULATION" + RESET + "                " + CYAN + "║" + RESET);
         System.out.println(CYAN + "╚════════════════════════════════════════════════════════════════╝" + RESET);
         System.out.println();
-        
-        // Stats header with day/tick information
         int aliveCount = 0;
+
         for (Creature c : world.getCreatures()) {
             if (c.isAlive()) aliveCount++;
         }
@@ -258,8 +221,6 @@ public class WorldVisualizer {
                           BRIGHT_RED + "M" + RESET + " = Monster  " + 
                           BRIGHT_YELLOW + "*" + RESET + " = Food");
         System.out.println();
-
-        // Creature stats (static - only updates when rendered)
         int shown = 0;
         for (Creature creature : world.getCreatures()) {
             if (creature.isAlive() && shown < 5) {
@@ -277,11 +238,8 @@ public class WorldVisualizer {
         }
         if (shown > 0) System.out.println();
         System.out.println();
-        
-        // Event log (only show recent events)
         if (events != null && !events.isEmpty()) {
             System.out.println(CYAN + "  Recent Events:" + RESET);
-            // Show last 3 events
             int start = Math.max(0, events.size() - 3);
             for (int i = start; i < events.size(); i++) {
                 System.out.println("  " + YELLOW + "•" + RESET + " " + events.get(i));
@@ -291,7 +249,7 @@ public class WorldVisualizer {
     }
     
     private String createHealthBar(int health) {
-        int bars = health / 5;  // 20 bars max (100%)
+        int bars = health / 5;
         StringBuilder bar = new StringBuilder();
         String color = health > 50 ? BRIGHT_GREEN : health > 25 ? YELLOW : BRIGHT_RED;
         

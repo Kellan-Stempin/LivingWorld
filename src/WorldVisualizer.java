@@ -158,7 +158,7 @@ public class WorldVisualizer {
 
         System.out.println();
         System.out.println(CYAN + "╔════════════════════════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "║" + RESET + "              " + BRIGHT_YELLOW + "LIVING WORLD SIMULATION" + RESET + "                " + CYAN + "║" + RESET);
+        System.out.println(CYAN + "║" + RESET + "              " + BRIGHT_YELLOW + "        LIVING WORLD SIMULATION" + RESET + "                " + CYAN + "   ║" + RESET);
         System.out.println(CYAN + "╚════════════════════════════════════════════════════════════════╝" + RESET);
         System.out.println();
         int aliveCount = 0;
@@ -168,7 +168,7 @@ public class WorldVisualizer {
         }
         
         System.out.println("  " + GREEN + "Day: " + RESET + BRIGHT_YELLOW + day + RESET + 
-                          "  │  " + GREEN + "Tick: " + RESET + BRIGHT_YELLOW + tickInDay + RESET + "/24" +
+                          "  │  " + GREEN + "Tick: " + RESET + BRIGHT_YELLOW + tickInDay + RESET + "/ 24" +
                           "  │  " + GREEN + "Total Ticks: " + RESET + BRIGHT_YELLOW + totalTick + RESET);
         System.out.println("  " + GREEN + "Alive: " + RESET + BRIGHT_GREEN + aliveCount + RESET + 
                           " / " + world.getCreatures().size() + 
@@ -262,19 +262,4 @@ public class WorldVisualizer {
         }
         return bar.toString();
     }
-    
-    public void showInstructions() {
-        System.out.println();
-        System.out.println(CYAN + "═══════════════════════════════════════════════════════════════" + RESET);
-        System.out.println(YELLOW + "  TIP: For better visualization, reduce your terminal font size!" + RESET);
-        System.out.println(CYAN + "═══════════════════════════════════════════════════════════════" + RESET);
-        System.out.println();
-        System.out.println("  " + GREEN + "Windows Terminal:" + RESET + " Settings → Appearance → Font size (try 8-10pt)");
-        System.out.println("  " + GREEN + "PowerShell:" + RESET + " Right-click title bar → Properties → Font (try 8-10pt)");
-        System.out.println("  " + GREEN + "VS Code Terminal:" + RESET + " Settings → Terminal → Font Size (try 10-12px)");
-        System.out.println();
-        System.out.println("  Smaller fonts allow more detail in the ASCII visualization!");
-        System.out.println();
-    }
 }
-

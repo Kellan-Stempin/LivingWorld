@@ -10,9 +10,6 @@ public class App {
         WorldVisualizer visualizer = new WorldVisualizer();
         Random random = new Random();
         Scanner scanner = new Scanner(System.in);
-        
-        // Show instructions on first run
-        visualizer.showInstructions();
         System.out.print("Press Enter to start the simulation...");
         scanner.nextLine();
         

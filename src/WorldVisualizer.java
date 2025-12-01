@@ -221,22 +221,30 @@ public class WorldVisualizer {
                           BRIGHT_RED + "M" + RESET + " = Monster  " + 
                           BRIGHT_YELLOW + "*" + RESET + " = Food");
         System.out.println();
-        int shown = 0;
+        
+        // Count animals and monsters
+        int animalCount = 0;
+        int monsterCount = 0;
         for (Creature creature : world.getCreatures()) {
-            if (creature.isAlive() && shown < 5) {
-                String speciesColor = creature.getSpecies().equals("Animal") ? BRIGHT_GREEN : BRIGHT_RED;
-                String healthBar = createHealthBar(creature.getHealth());
-                String healthColor = creature.getHealth() > 50 ? BRIGHT_GREEN : 
-                                    creature.getHealth() > 25 ? YELLOW : BRIGHT_RED;
-                
-                System.out.print("  " + speciesColor + creature.getName() + RESET + 
-                               " [" + creature.getSpecies() + "] " +
-                               healthColor + healthBar + " " + creature.getHealth() + "%" + RESET);
-                if (shown < 4) System.out.print("  │  ");
-                shown++;
+            if (creature.isAlive()) {
+                if (creature.getSpecies().equals("Animal")) {
+                    animalCount++;
+                } else {
+                    monsterCount++;
+                }
             }
         }
-        if (shown > 0) System.out.println();
+        
+        // Create ratio bar (Animals vs Monsters)
+        int totalAlive = animalCount + monsterCount;
+        int barWidth = 40; // Width of the ratio bar
+        
+        String ratioBar = createRatioBar(animalCount, monsterCount, barWidth);
+        
+        // Display the ratio bar with counts on either side
+        System.out.print("  " + BRIGHT_GREEN + animalCount + RESET + " ");
+        System.out.print(ratioBar);
+        System.out.println(" " + BRIGHT_RED + monsterCount + RESET);
         System.out.println();
         if (events != null && !events.isEmpty()) {
             System.out.println(CYAN + "  Recent Events:" + RESET);
@@ -248,18 +256,33 @@ public class WorldVisualizer {
         }
     }
     
-    private String createHealthBar(int health) {
-        int bars = health / 5;
-        StringBuilder bar = new StringBuilder();
-        String color = health > 50 ? BRIGHT_GREEN : health > 25 ? YELLOW : BRIGHT_RED;
-        
-        for (int i = 0; i < 20; i++) {
-            if (i < bars) {
-                bar.append(color).append("█").append(RESET);
-            } else {
+    private String createRatioBar(int animalCount, int monsterCount, int width) {
+        int total = animalCount + monsterCount;
+        if (total == 0) {
+            // Empty bar if no creatures
+            StringBuilder bar = new StringBuilder();
+            for (int i = 0; i < width; i++) {
                 bar.append("░");
             }
+            return bar.toString();
         }
+        
+        // Calculate how many blocks for each species
+        int animalBlocks = (int) Math.round((double) animalCount / total * width);
+        int monsterBlocks = width - animalBlocks; // Remaining goes to monsters
+        
+        StringBuilder bar = new StringBuilder();
+        
+        // Add animal blocks (green)
+        for (int i = 0; i < animalBlocks; i++) {
+            bar.append(BRIGHT_GREEN).append("█").append(RESET);
+        }
+        
+        // Add monster blocks (red)
+        for (int i = 0; i < monsterBlocks; i++) {
+            bar.append(BRIGHT_RED).append("█").append(RESET);
+        }
+        
         return bar.toString();
     }
 }

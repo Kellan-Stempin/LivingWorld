@@ -105,4 +105,6 @@ public abstract class Creature implements Attack {
     }
 
     public abstract Creature reproduce();
+
+    public abstract String getType();
 }

@@ -55,8 +55,6 @@ public class App {
         boolean running = true;
         List<String> events = new ArrayList<>();
         
-        // Shutdown hook removed - no final stats display
-        
         while (running) {
             tick++;
             events.clear();
@@ -84,6 +82,22 @@ public class App {
                 } while (creature1 == creature2);
                 
                 events.add("ENCOUNTER: " + creature1.getName() + " meets " + creature2.getName() + "!");
+
+                // add reproduction here? 
+                if (creature1.getType() == creature2.getType()) {
+                    Creature offspring = creature1.reproduce();
+                    if (offspring != null) {
+                        int parentX = creature1.getX();
+                        int parentY = creature1.getY();
+                        int offsetX = random.nextInt(5) - 2;
+                        int offsetY = random.nextInt(5) - 2;
+                        int newX = Math.max(0, Math.min(59, parentX + offsetX)); // 60 width (0-59)
+                        int newY = Math.max(0, Math.min(24, parentY + offsetY)); // 25 height (0-24)
+                        offspring.setPosition(newX, newY);
+                        
+                        newCreatures.add(offspring);
+                    }
+                }
                 
                 while (creature1.isAlive() && creature2.isAlive()) {
                     creature1.attack(creature2);
@@ -101,22 +115,22 @@ public class App {
                 }
             }
             
-            for (Creature creature : currentCreatures) {
-                if (creature.isAlive()) {
-                    Creature offspring = creature.reproduce();
-                    if (offspring != null) {
-                        int parentX = creature.getX();
-                        int parentY = creature.getY();
-                        int offsetX = random.nextInt(5) - 2;
-                        int offsetY = random.nextInt(5) - 2;
-                        int newX = Math.max(0, Math.min(59, parentX + offsetX)); // 60 width (0-59)
-                        int newY = Math.max(0, Math.min(24, parentY + offsetY)); // 25 height (0-24)
-                        offspring.setPosition(newX, newY);
+            // for (Creature creature : currentCreatures) {
+            //     if (creature.isAlive()) {
+            //         Creature offspring = creature.reproduce();
+            //         if (offspring != null) {
+            //             int parentX = creature.getX();
+            //             int parentY = creature.getY();
+            //             int offsetX = random.nextInt(5) - 2;
+            //             int offsetY = random.nextInt(5) - 2;
+            //             int newX = Math.max(0, Math.min(59, parentX + offsetX)); // 60 width (0-59)
+            //             int newY = Math.max(0, Math.min(24, parentY + offsetY)); // 25 height (0-24)
+            //             offspring.setPosition(newX, newY);
                         
-                        newCreatures.add(offspring);
-                    }
-                }
-            }
+            //             newCreatures.add(offspring);
+            //         }
+            //     }
+            // }
             
             // Add new creatures (only if under capacity limit)
             for (Creature newCreature : newCreatures) {

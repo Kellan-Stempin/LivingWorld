@@ -21,6 +21,11 @@ public class Animal extends Creature {
         return null;
 
     }
+
+    @Override
+    public String getType() {
+        return "Animal";
+    }
 }
     
         

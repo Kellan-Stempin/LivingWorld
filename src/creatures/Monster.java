@@ -21,4 +21,9 @@ public class Monster extends Creature {
         return null;
 
     }
+
+    @Override
+    public String getType() {
+        return "Monster";
+    }
 }

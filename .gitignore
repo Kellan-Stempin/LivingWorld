@@ -1,5 +1,8 @@
 # Compiled class files
 bin/
+bin/*
+*.bin
+**/bin/
 *.class
 
 # IDE files

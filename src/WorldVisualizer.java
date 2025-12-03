@@ -182,7 +182,7 @@ public class WorldVisualizer {
         }
         
         System.out.println("  " + GREEN + "Day: " + RESET + BRIGHT_YELLOW + day + RESET + 
-                          "  │  " + GREEN + "Tick: " + RESET + BRIGHT_YELLOW + tickInDay + RESET + "/ 24" +
+                          "  │  " + GREEN + "Tick: " + RESET + BRIGHT_YELLOW + tickInDay + RESET + " / 24" +
                           "  │  " + GREEN + "Total Ticks: " + RESET + BRIGHT_YELLOW + totalTick + RESET);
         System.out.println("  " + GREEN + "Alive: " + RESET + BRIGHT_GREEN + aliveCount + RESET + 
                           " / " + world.getCreatures().size() + 

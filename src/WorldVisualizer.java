@@ -73,7 +73,7 @@ public class WorldVisualizer {
             }
         }
 
-        // Track creature positions for change detection
+        // Track creature positions 
         List<String> currentPositions = new ArrayList<>();
         for (Creature creature : world.getCreatures()) {
             if (creature.isAlive()) {
@@ -108,7 +108,6 @@ public class WorldVisualizer {
                         } else if (creatureType != null && creatureType.equals("Monster")) {
                             grid[y][x] = 'M';
                         } else {
-                            // Fallback to species if type is null
                             if (creature.getSpecies() != null && creature.getSpecies().equals("Animal")) {
                                 grid[y][x] = 'A';
                             } else {
@@ -118,7 +117,6 @@ public class WorldVisualizer {
                         creatureNames[y][x] = creature.getName();
                         creatureHealth[y][x] = creature.getHealth();
                     } else {
-                        // Debug: log if creatures are outside bounds
                         System.err.println("Creature " + creature.getName() + " at (" + x + "," + y + ") is outside bounds!");
                     }
                 }
@@ -138,7 +136,7 @@ public class WorldVisualizer {
             previousAliveCount = aliveCount;
             previousTotalCreatures = totalCreatures;
             previousFoodCount = foodCount;
-            previousCreatureStates = new ArrayList<>(currentPositions); // Store positions, not just health
+            previousCreatureStates = new ArrayList<>(currentPositions); 
             render(day, tickInDay, totalTick, world, events);
             return true;
         }

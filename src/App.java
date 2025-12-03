@@ -37,7 +37,7 @@ public class App {
                     System.out.println("\nInvalid input. Using continuous mode instead.");
                     continuousMode = true;
                 } else {
-                    totalTicks = days * 24; // Each day = 24 ticks
+                    totalTicks = days * 24; // Each day is 24 ticks
                     System.out.println("\nSimulating " + days + " day(s) (" + totalTicks + " ticks)...");
                 }
             } catch (NumberFormatException e) {
@@ -50,7 +50,6 @@ public class App {
         scanner.nextLine();
         
         double encounterChance = 0.30;
-        double spawnChance = 0.0; // Disabled - creatures only come from reproduction now
         double foodSpawnChance = 0.30;
         
         int tick = 0;
@@ -93,15 +92,10 @@ public class App {
                     events.add("ENCOUNTER: " + creature1.getName() + " (" + creature1.getType() + 
                               ") meets " + creature2.getName() + " (" + creature2.getType() + ")!");
                     
-                    // Reproduction requires BOTH creatures to be present
-                    // Try reproduction - both must be able to reproduce for it to work
-                    // Use a combined chance or require both to succeed
                     Random rand = new Random();
-                    double reproductionChance = 0.5; // 50% chance when two same-type creatures meet
+                    double reproductionChance = 0.5; // 50% reproduction chance when two same-type creatures meet
                     
                     if (rand.nextDouble() < reproductionChance) {
-                        // Create offspring based on the type (requires BOTH parents)
-                        // Generate a simple name to avoid exponential name growth
                         String offspringName = generateOffspringName(creature1.getName(), creature2.getName());
                         
                         Creature offspring;
@@ -111,19 +105,15 @@ public class App {
                             offspring = new Monster(offspringName);
                         }
                         
-                        // Position offspring - can be on same position as parents or nearby
                         int newX, newY;
                         double positionRoll = rand.nextDouble();
                         if (positionRoll < 0.33) {
-                            // 33% chance: same position as parent1
                             newX = creature1.getX();
                             newY = creature1.getY();
                         } else if (positionRoll < 0.66) {
-                            // 33% chance: same position as parent2
                             newX = creature2.getX();
                             newY = creature2.getY();
                         } else {
-                            // 34% chance: nearby (between parents or adjacent)
                             int parentX = (creature1.getX() + creature2.getX()) / 2;
                             int parentY = (creature1.getY() + creature2.getY()) / 2;
                             int offsetX = rand.nextInt(3) - 1; // -1 to +1
@@ -139,7 +129,7 @@ public class App {
                         events.add("  No reproduction occurred.");
                     }
                 } else {
-                    // Different types: attack only (no reproduction)
+                    // Different creature types: attack only 
                     events.add("ENCOUNTER: " + creature1.getName() + " (" + creature1.getType() + 
                               ") meets " + creature2.getName() + " (" + creature2.getType() + ")!");
                     events.add("  A fight to the death begins!");
@@ -161,12 +151,11 @@ public class App {
                 }
             }
             
-            // Add new creatures (only if under capacity limit)
+            // Add new creatures
             for (Creature newCreature : newCreatures) {
                 if (world.addCreature(newCreature)) {
                     events.add(newCreature.getName() + " was born!");
                 }
-                // If addCreature returns false, creature wasn't added (at capacity)
             }
             
             // Check for food consumption (creatures near food)
@@ -179,37 +168,27 @@ public class App {
                         int foodX = food.getX();
                         int foodY = food.getY();
                         
-                        // Calculate distance (Manhattan distance)
+                        // Calculate manhattan distance 
                         int distance = Math.abs(creatureX - foodX) + Math.abs(creatureY - foodY);
                         
                         // If creature is within 2 cells of food, consume it
                         if (distance <= 2) {
                             int nutrition = food.consume();
                             if (nutrition > 0) {
-                                creature.heal(10); // Increase health by 10
+                                creature.heal(10); // Increase health by 10 
                                 events.add(creature.getName() + " ate " + food.getType() + "! (+10 health)");
-                                break; // Creature can only eat one food per tick
+                                break; 
                             }
                         }
                     }
                 }
             }
-            
-            // Random spawning disabled - creatures only come from reproduction
-            // This ensures all creatures have parents and the simulation is more realistic
-            // if (random.nextDouble() < spawnChance) {
-            //     Creature newCreature = world.createCreature();
-            //     if (newCreature != null) {
-            //         events.add("New creature spawned: " + newCreature.getName());
-            //     }
-            // }
+        
 
             if (random.nextDouble() < foodSpawnChance) {
                 world.spawnFood();
                 events.add("Food spawned in the world!");
             }
-
-            // Always visualize to show current state
             visualizer.visualize(world, currentDay, tickInDay, tick, events);
 
             if (!continuousMode && tick >= totalTicks) {
@@ -257,10 +236,10 @@ public class App {
                 int x2 = c2.getX();
                 int y2 = c2.getY();
                 
-                // Calculate Manhattan distance (sum of horizontal and vertical distance)
+                // Calculate Manhattan distance 
                 int manhattanDistance = Math.abs(x1 - x2) + Math.abs(y1 - y2);
                 
-                // Also check if they're on the same cell (touching directly)
+                // Check if they are touching on same cell
                 boolean sameCell = (x1 == x2 && y1 == y2);
                 
                 // Check if within maxDistance OR on same cell
@@ -274,11 +253,9 @@ public class App {
     }
     
     /**
-     * Generate a simple name for offspring by appending " Jr." to parent's name
+     * Generate a name for offspring by appending " Jr." to parent's name
      */
     private static String generateOffspringName(String parent1Name, String parent2Name) {
-        // Simply append " Jr." to the first parent's name
-        // This will create: "Draco", "Draco Jr.", "Draco Jr. Jr.", etc.
         return parent1Name + " Jr.";
     }
 }

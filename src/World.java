@@ -17,7 +17,7 @@ public class World {
     // Board dimensions and max capacity
     private static final int BOARD_WIDTH = 60;
     private static final int BOARD_HEIGHT = 25;
-    private static final int MAX_CREATURES = 200; // Max creatures that can fit on board (60*25 = 1500 cells, but limit to 200 for gameplay)
+    private static final int MAX_CREATURES = 1500; // Max creatures that can fit on board 
     private static final int MAX_FOOD = 50; // Max food items
 
     public World() {
@@ -78,7 +78,7 @@ public class World {
             newCreature = new Monster(name);
         }
         
-        // Assign random position (60x25 grid)
+        // Assign random position on grid
         int x = random.nextInt(BOARD_WIDTH);
         int y = random.nextInt(BOARD_HEIGHT);
         newCreature.setPosition(x, y);
@@ -115,7 +115,7 @@ public class World {
         int nutrition = 1 + random.nextInt(5);
         Food newFood = new Food(type, nutrition);
         
-        // Assign random position (60x25 grid)
+        // Assign food to random position 
         int x = random.nextInt(BOARD_WIDTH);
         int y = random.nextInt(BOARD_HEIGHT);
         newFood.setPosition(x, y);
@@ -163,13 +163,12 @@ public class World {
         // Check if we're at max capacity before adding
         int aliveCount = getAliveCreatureCount();
         if (aliveCount >= MAX_CREATURES) {
-            return false; // Can't add more creatures
+            return false; 
         }
         creatures.add(creature);
         return true;
     }
     
-    // Move creatures slightly each iteration to simulate movement
     public void updatePositions() {
         for (Creature creature : creatures) {
             if (creature.isAlive()) {

@@ -8,11 +8,8 @@ public class WorldVisualizer {
 
     private static final String RESET = "\u001B[0m";
     private static final String GREEN = "\u001B[32m";
-    private static final String RED = "\u001B[31m";
     private static final String YELLOW = "\u001B[33m";
-    private static final String BLUE = "\u001B[34m";
     private static final String CYAN = "\u001B[36m";
-    private static final String MAGENTA = "\u001B[35m";
     private static final String BRIGHT_GREEN = "\u001B[92m";
     private static final String BRIGHT_RED = "\u001B[91m";
     private static final String BRIGHT_YELLOW = "\u001B[93m";
@@ -24,11 +21,6 @@ public class WorldVisualizer {
     private static final String BOTTOM_RIGHT = "┘";
     private static final String HORIZONTAL = "─";
     private static final String VERTICAL = "│";
-    private static final String CROSS = "┼";
-    private static final String T_UP = "┴";
-    private static final String T_DOWN = "┬";
-    private static final String T_LEFT = "┤";
-    private static final String T_RIGHT = "├";
     
     private char[][] grid;
     private String[][] creatureNames;

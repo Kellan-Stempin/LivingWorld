@@ -22,7 +22,7 @@ public abstract class Creature implements Attack {
         this.health = 100;
         this.hunger = 0;
         this.strength = this.random.nextInt(0, 100);
-        this.replicationChance = this.random.nextInt(0, 10); //can the creature replicate
+        this.replicationChance = this.random.nextInt(0, 100); //can the creature replicate
         this.friendliness = this.random.nextInt(0, 100);
         this.alive = true;
     }
@@ -84,6 +84,12 @@ public abstract class Creature implements Attack {
     public void eat(int nutrition) {
         if (alive) {
             this.hunger += nutrition;
+        }
+    }
+    
+    public void heal(int amount) {
+        if (alive) {
+            this.health = Math.min(100, this.health + amount); // Cap health at 100
         }
     }
 
